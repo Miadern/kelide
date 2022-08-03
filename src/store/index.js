@@ -16,7 +16,14 @@ const store = new Vuex.Store({
   getters,
   plugins: [
     persistedState({
-      paths: ['user'],
+      reducer(state) {
+        return {
+          user: {
+            token: state.user.token,
+            userId: state.user.userId,
+          },
+        }
+      },
     }),
   ],
 })

@@ -58,7 +58,9 @@
               />
             </div>
           </el-form-item>
-          <el-button type="primary" @click="loginFn">登录</el-button>
+          <el-button type="primary" @click="loginFn" :loading="isload"
+            >登录</el-button
+          >
         </el-form>
       </div>
     </div>
@@ -84,6 +86,7 @@ export default {
       }, //表单规则
       radomNum: null, //验证码的随机数
       codeImg: '', //返回的验证码图片
+      isload: false, //登录按钮是否加载
     }
   },
 
@@ -121,19 +124,26 @@ export default {
     //发送请求获取验证码
     async getCode() {
       this.radomNum = this.radomFour()
-      const { data } = await getCode(this.radomNum)
-      this.codeImg = URL.createObjectURL(data)
+      const res = await getCode(this.radomNum)
+      this.codeImg = URL.createObjectURL(res)
     },
-    //点登录按钮之后登录！发送登录请求给vueX
-    loginFn() {
-      const login = {
-        loginName: this.loginForm.loginName,
-        password: this.loginForm.password,
-        code: this.loginForm.code,
-        clientToken: this.radomNum,
-        loginType: 0,
+    //点登录按钮之后登录！vueX发送登录请求
+    async loginFn() {
+      this.isload = true
+      try {
+        await this.$refs.loginForm.validate()
+        const login = {
+          loginName: this.loginForm.loginName,
+          password: this.loginForm.password,
+          code: this.loginForm.code,
+          clientToken: this.radomNum,
+          loginType: 0,
+        }
+        await this.$store.dispatch('user/login', login)
+      } catch (error) {
+      } finally {
+        this.isload = false
       }
-      this.$store.dispatch('user/login', login)
     },
     //点击图片更新验证码
     imgFn() {
