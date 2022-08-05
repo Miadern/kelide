@@ -15,6 +15,12 @@ color: #5f84ff
 .el-scrollbar__bar.is-vertical>div{
   height:70%
 }
+.el-menu.el-menu--inline {
+
+  .el-menu-item{
+    color: #999;
+  }
+}
 
 //侧边栏icon变黑
 .el-menu-item i{
@@ -140,6 +146,7 @@ color: unset;
       overflow: hidden;
 
       &>.el-submenu__title {
+   
         padding-left: 20px !important;
 i{
   color: black;

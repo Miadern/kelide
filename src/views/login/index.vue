@@ -140,7 +140,9 @@ export default {
           loginType: 0,
         }
         await this.$store.dispatch('user/login', login)
-      } catch (error) {
+        this.$router.push('/')
+        this.$message.success('登陆成功')
+      } catch (err) {
       } finally {
         this.isload = false
       }

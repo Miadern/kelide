@@ -1,12 +1,12 @@
 import { getUserInfo, login } from '@/api'
-import router from '@/router'
-import { Message } from 'element-ui'
+import { setTokenTime } from '@/utils/auth'
+
 export default {
   namespaced: true,
   state: {
     token: '',
     userId: '',
-    userAll: '',
+    userAll: {},
   },
   mutations: {
     //设置token和username
@@ -28,21 +28,18 @@ export default {
     //发送登录接口请求
     async login(context, payload) {
       const res = await login(payload)
-      if (res.success === false)
-        return Message({
-          showClose: true,
-          message: res.msg,
-          type: 'error',
-        })
       context.commit('setToken', res)
-      router.push({
-        path: '/dashboard',
-      })
+      //登录的时候储存一下时间戳
+      setTokenTime()
     },
 
     //获取用户基本信息
     async getUserInfo(context, payload) {
       const data = await getUserInfo(context.state.userId)
+      //头像如果不存在就改为1触发替换图片
+      if (data.image === null) {
+        data.image = 1
+      }
       context.commit('setUserAll', data)
     },
   },
