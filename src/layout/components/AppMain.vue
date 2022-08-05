@@ -19,8 +19,9 @@ export default {
 
 <style scoped>
 .app-main {
-  padding-top: 110px;
-  padding-left: 200px;
+  padding-top: 78px;
+  padding-left: 133px;
+  background-color: rgb(248, 250, 253);
   /* padding-top: 60px; */
   /*50 = navbar  */
   min-height: calc(100vh - 50px);
