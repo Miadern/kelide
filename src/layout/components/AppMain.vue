@@ -20,7 +20,7 @@ export default {
 <style scoped>
 .app-main {
   padding-top: 78px;
-  padding-left: 133px;
+  padding-left: 134px;
   background-color: rgb(248, 250, 253);
   /* padding-top: 60px; */
   /*50 = navbar  */

@@ -5,12 +5,13 @@
         <span style="width: 100px" class="hight"
           ><slot name="one">工单编号:</slot></span
         >
-        <el-input v-model="input" placeholder="请输入内容"> </el-input>
+        <el-input v-model="input" placeholder="请输入内容" clearable>
+        </el-input>
       </span>
 
       <span style="display: flex; margin: 0 10px">
         <span class="hight"><slot name="two"> 工单编号: </slot></span>
-        <el-select v-model="input2" filterable placeholder="请选择">
+        <el-select v-model="input2" filterable placeholder="请选择" clearable>
           <el-option
             v-for="item in status"
             :key="item.statusId"
@@ -20,7 +21,7 @@
           </el-option>
         </el-select>
       </span>
-      <myBtn bgc="rgb(95, 132, 255)" margin="0 0 0 10">
+      <myBtn bgc="rgb(95, 132, 255)" margin="0 0 0 10" @click.native="btnFn">
         <i class="el-icon-search"></i> 查询</myBtn
       >
     </div>
@@ -30,6 +31,7 @@
 <script>
 import myBtn from '@/components/myBtn'
 export default {
+  name: 'inputHeader',
   props: {
     status: {
       type: Array,
@@ -43,15 +45,13 @@ export default {
     return {
       input: '',
       input2: '',
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕',
-        },
-      ],
     }
   },
-  methods: {},
+  methods: {
+    btnFn() {
+      this.$emit('onClick', this.input.trim(), this.input2)
+    },
+  },
 }
 </script>
 

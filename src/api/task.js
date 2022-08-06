@@ -22,3 +22,39 @@ export const getTaskList = (params) => {
     params,
   })
 }
+
+/**
+ * 获取补货预警值
+ * @returns
+ */
+export const getAlertValue = () => {
+  return request({
+    url: `/api/task-service/task/supplyAlertValue`,
+    method: 'GET',
+  })
+}
+
+/**
+ * 设置自动补货工单阈值
+ * @param {*} alertValue 预警值(百分比，如50代表，满量的百分之50为补货预警值)
+ * @returns
+ */
+export const setAlertValue = (alertValue) => {
+  return request({
+    url: `/api/task-service/task/autoSupplyConfig`,
+    method: 'POST',
+    data: { alertValue },
+  })
+}
+
+/**
+ *
+ * @param {*} innerCode
+ * @returns
+ */
+export const getOperatorList = (innerCode) => {
+  return request({
+    url: `/api/user-service/user/operatorList/${innerCode}`,
+    method: 'GET',
+  })
+}

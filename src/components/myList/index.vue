@@ -1,11 +1,16 @@
 <template>
   <el-card class="box-card">
     <div style="display: flex" class="btnB">
-      <myBtn bgc="linear-gradient(135deg, #ff9743, #ff5e20)"
-        ><i class="el-icon-circle-plus-outline"></i>新建</myBtn
+      <myBtn
+        bgc="linear-gradient(135deg, #ff9743, #ff5e20)"
+        @click.native="createVisible = true"
+      >
+        <i class="el-icon-circle-plus-outline"></i>新建</myBtn
       >
       <span class="marginright"></span>
-      <myBtn bgc="#fbf4f0" color="#655b56"> 工单配置 </myBtn>
+      <myBtn bgc="#fbf4f0" color="#655b56" @click.native="alertValueFn">
+        工单配置
+      </myBtn>
     </div>
     <el-table
       :data="list"
@@ -15,7 +20,7 @@
     >
       <el-table-column prop="taskId" label="序号" width="80">
         <template v-slot="scope">
-          {{ scope.$index + 1 }}
+          {{ scope.$index + 1 + indexOne }}
         </template>
       </el-table-column>
       <el-table-column prop="taskCode" label="工单编号"> </el-table-column>
@@ -43,19 +48,49 @@
       >
     </el-table>
     <el-pagination
-      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage1"
-      :page-size="100"
+      :page-size="10"
       layout="total, prev, pager, next"
       :total="total"
     >
     </el-pagination>
+    <!-- 弹出对话框 -->
+    <el-dialog title="工单配置" :visible.sync="dialogVisible" width="25%">
+      补货警戒线：
+      <el-input-number
+        v-model="num"
+        controls-position="right"
+        :min="0"
+        :max="100"
+      ></el-input-number>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" class="popCanBtn"
+          >取 消</el-button
+        >
+        <el-button type="primary" @click="dialogConf" class="popConBtn">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
+    <!-- 新建 -->
+    <el-dialog title="工单配置" :visible.sync="createVisible" width="25%">
+      123
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="createVisible = false" class="popCanBtn"
+          >取 消</el-button
+        >
+        <el-button type="primary" @click="createConf" class="popConBtn">
+          确 定
+        </el-button>
+      </span>
+    </el-dialog>
   </el-card>
 </template>
 
 <script>
 import myBtn from '@/components/myBtn'
+import { getAlertValue, setAlertValue } from '@/api'
 export default {
   name: 'list',
   props: {
@@ -76,22 +111,43 @@ export default {
     return {
       index: '0',
       currentPage1: 1,
+      indexOne: 0,
+      //弹出层
+      dialogVisible: false,
+      //新建的弹出层
+      createVisible: false,
+      //警戒数字
+      num: 1,
     }
   },
 
   created() {},
 
   methods: {
+    //点击新建弹出框确认按钮
+    createConf() {
+      this.createVisible = false
+    },
+    //点击弹出框确认
+    async dialogConf() {
+      this.dialogVisible = false
+      await setAlertValue(this.num)
+    },
+
+    //点击工单配置按钮触发弹窗并发送请求
+    async alertValueFn() {
+      const data = await getAlertValue()
+      this.dialogVisible = true
+      this.num = data
+    },
     //修改表头
     headerColor() {
       return 'background:rgb(243,246,251)'
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-    },
+    //跳页时进行操作同步父组件
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.$emit('loadPage')
+      this.indexOne = (val - 1) * 10
+      this.$emit('loadPage', val)
     },
   },
 }
@@ -111,5 +167,21 @@ export default {
 }
 .btnB {
   margin-bottom: 10px;
+}
+</style>
+<style>
+.popConBtn {
+  height: 36px;
+  width: 80px;
+  padding: 0;
+  border: unset;
+  background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
+}
+.popCanBtn {
+  width: 80px !important;
+  height: 36px;
+  padding: 0;
+  border: unset;
+  background-color: #fbf4f0 !important;
 }
 </style>
